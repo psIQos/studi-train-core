@@ -29,7 +29,6 @@ namespace StudiTrain
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseHttpsRedirection();
             }
             else
             {
@@ -37,11 +36,9 @@ namespace StudiTrain
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
