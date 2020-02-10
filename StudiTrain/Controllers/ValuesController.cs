@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using StudiTrain.Models;
 
 namespace StudiTrain.Controllers
 {
@@ -21,7 +22,8 @@ namespace StudiTrain.Controllers
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
-            return "value";
+            var db = new HerokuPostgresStagingContext();
+            return db.Questions.First().QuestionText;
         }
 
         // POST api/values
