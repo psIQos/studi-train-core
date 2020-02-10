@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace StudiTrain.Models
 {
-    public partial class HerokuPostgresStagingContext : DbContext
+    public partial class PostgresContext : DbContext
     {
-        public HerokuPostgresStagingContext()
+        public PostgresContext()
         {
         }
 
-        public HerokuPostgresStagingContext(DbContextOptions<HerokuPostgresStagingContext> options)
+        public PostgresContext(DbContextOptions<PostgresContext> options)
             : base(options)
         {
         }
@@ -20,11 +20,10 @@ namespace StudiTrain.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Host=ec2-54-246-90-10.eu-west-1.compute.amazonaws.com;Database=d7au6sj4t97jm9;Username=upwrknlermayjr;Password=2656247f7be30b3be6665486160de4b761f6240a5df735347121be4d53c09450;SslMode=Require;Trust Server Certificate=True");
-            }
+            //if (!optionsBuilder.IsConfigured)
+            //{
+            //    optionsBuilder.UseNpgsql();
+            //}
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

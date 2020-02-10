@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudiTrain.Models;
 
 namespace StudiTrain.Controllers
@@ -11,19 +13,28 @@ namespace StudiTrain.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly PostgresContext _db;
+
+        public ValuesController(ControllerSetup setup)
+        {
+            if (setup.ConnectionString == null)
+                return;
+            var optionsBuilder = new DbContextOptionsBuilder<PostgresContext>();
+            optionsBuilder.UseNpgsql(setup.ConnectionString);
+            _db = new PostgresContext(optionsBuilder.Options);
+        }
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IDictionary> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(Environment.GetEnvironmentVariables());
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<Questions> Get(int id)
         {
-            var db = new HerokuPostgresStagingContext();
-            return db.Questions.First().QuestionText;
+            return Ok(_db.Questions.First());
         }
 
         // POST api/values
