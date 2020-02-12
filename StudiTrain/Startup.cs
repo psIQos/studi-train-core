@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using StudiTrain.Models;
+using StudiTrain.Setup;
 
 namespace StudiTrain
 {
@@ -20,12 +20,7 @@ namespace StudiTrain
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(new ControllerSetup()
-            {
-                ConnectionString = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" 
-                    ? Configuration["ConnectionString"]
-                    : Environment.GetEnvironmentVariable("DATABASE_URL")
-            });
+            services.AddSingleton(new ControllerSetup(Configuration));
             services.AddControllers();
         }
 
