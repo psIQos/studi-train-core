@@ -33,7 +33,10 @@ namespace StudiTrain.Controllers
         [HttpGet("{id}")]
         public ActionResult<Questions> Get(int id)
         {
-            return _db.Questions.First(q => q.Id == id);
+            var result = _db.Questions.Where(q => q.Id == id);
+            if (result.Any())
+                return result.First();
+            return NoContent();
         }
 
         // POST api/values
