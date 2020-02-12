@@ -24,11 +24,12 @@ namespace StudiTrain.Setup
         /// <returns></returns>
         private static string PostgresToConnectionString(string libpqString)
         {
+            if (libpqString is null) throw new ArgumentException("libpq string not set");
             var leadIndex = libpqString.IndexOf("://", StringComparison.Ordinal);
-            var paramDeclarations = new []{"Username=", "Password", "Host", "Port", "Database"};
-            var paramValues = libpqString.Substring(leadIndex + 3).Split(new[]{ ':', '@'});
+            var paramDeclarations = new []{"Username", "Password", "Host", "Port", "Database"};
+            var paramValues = libpqString.Substring(leadIndex + 3).Split(new[]{ ':', '@', '/'});
 
-            if (paramValues.Length != 5) throw new ArgumentException("libpq string is of the wrong format");
+            if (paramValues.Length != 5) throw new ArgumentException("libpq string has not enough parameters");
 
             return string.Join(";", paramDeclarations.Zip(paramValues, (decl, val) => decl + "=" + val))
                  + ";SslMode=Require;Trust Server Certificate=True";
