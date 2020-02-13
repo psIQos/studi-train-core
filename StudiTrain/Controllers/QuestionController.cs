@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
@@ -24,16 +25,17 @@ namespace StudiTrain.Controllers
         }
         // GET api/values
         [HttpGet]
-        public ActionResult<DbSet<Questions>> Get()
+        public ActionResult<List<Questions>> Get()
         {
-            return _db.Questions;
+            return _db.Questions.Include(q => q.AnswersMc).ToList();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<Questions> Get(int id)
         {
-            var result = _db.Questions.Where(q => q.Id == id);
+            var result = _db.Questions.Where(q => q.Id == id)
+                .Include(q => q.AnswersMc);
             if (result.Any())
                 return result.First();
             return NoContent();

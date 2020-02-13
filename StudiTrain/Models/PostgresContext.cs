@@ -20,15 +20,11 @@ namespace StudiTrain.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //if (!optionsBuilder.IsConfigured)
-            //{
-            //    optionsBuilder.UseNpgsql();
-            //}
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AnswersMc>(entity =>
+           modelBuilder.Entity<AnswersMc>(entity =>
             {
                 entity.HasKey(e => new { e.QId, e.Number })
                     .HasName("answers_mc_pkey");
