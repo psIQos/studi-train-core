@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Configuration;
 
 namespace StudiTrain.Setup
 {
@@ -26,8 +25,8 @@ namespace StudiTrain.Setup
         {
             if (libpqString is null) throw new ArgumentException("libpq string not set");
             var leadIndex = libpqString.IndexOf("://", StringComparison.Ordinal);
-            var paramDeclarations = new []{"Username", "Password", "Host", "Port", "Database"};
-            var paramValues = libpqString.Substring(leadIndex + 3).Split(new[]{ ':', '@', '/'});
+            var paramDeclarations = new[] { "Username", "Password", "Host", "Port", "Database" };
+            var paramValues = libpqString.Substring(leadIndex + 3).Split(new[] { ':', '@', '/' });
 
             if (paramValues.Length != 5) throw new ArgumentException("libpq string has not enough parameters");
 
