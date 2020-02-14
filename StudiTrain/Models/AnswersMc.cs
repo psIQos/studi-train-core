@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StudiTrain.Models
 {
-    public class AnswersMc
+    public partial class AnswersMc
     {
         public int QId { get; set; }
         public int Number { get; set; }

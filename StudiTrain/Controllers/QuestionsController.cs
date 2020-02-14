@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudiTrain.Models;
@@ -10,23 +12,20 @@ namespace StudiTrain.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QuestionController : ControllerBase
+    public class QuestionsController : ControllerBase
     {
         private readonly PostgresContext _db;
 
-        public QuestionController(ControllerSetup setup)
+        public QuestionsController(AppSettings settings)
         {
-            if (setup.ConnectionString == null)
-                throw new InvalidOperationException("Connection string has to be set by environment variables.");
-            var optionsBuilder = new DbContextOptionsBuilder<PostgresContext>();
-            optionsBuilder.UseNpgsql(setup.ConnectionString);
-            _db = new PostgresContext(optionsBuilder.Options);
+            _db = new PostgresContext(settings.ControllerSetup.ConnectionString);
         }
         // GET api/values
+        [Authorize]
         [HttpGet]
-        public ActionResult<DbSet<Questions>> Get()
+        public ActionResult<List<Questions>> Get()
         {
-            return _db.Questions;
+            return _db.Questions.ToList();
         }
 
         // GET api/values/5
