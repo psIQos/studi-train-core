@@ -22,7 +22,7 @@ namespace StudiTrain
         public void ConfigureServices(IServiceCollection services)
         {
             var settings = new AppSettings(Configuration);
-            services.AddSingleton(settings);
+            services.AddSingleton<IAppSettings>(settings);
             services.AddControllers();
 
             services.AddAuthentication(x =>

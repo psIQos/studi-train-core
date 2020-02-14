@@ -6,7 +6,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace StudiTrain.Setup
 {
-    public class AppSettings
+    public interface IAppSettings
+    {
+        public ControllerSetup ControllerSetup { get; set; }
+        public JwtSetup JwtSetup { get; set; }
+    }
+    public class AppSettings : IAppSettings
     {
         public ControllerSetup ControllerSetup { get; set; }
 

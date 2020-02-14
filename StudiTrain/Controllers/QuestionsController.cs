@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StudiTrain.Models;
 using StudiTrain.Models.Database;
 using StudiTrain.Setup;
 
@@ -13,27 +9,25 @@ namespace StudiTrain.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QuestionsController : ControllerBase
+    public class QuestionsController : StudiTrainController
     {
-        private readonly PostgresContext _db;
-
-        public QuestionsController(AppSettings settings)
+        public QuestionsController(IAppSettings settings) : base(settings)
         {
-            _db = new PostgresContext(settings.ControllerSetup.ConnectionString);
         }
+
         // GET api/values
         [Authorize]
         [HttpGet]
         public ActionResult<DbSet<Questions>> Get()
         {
-            return _db.Questions;
+            return DbConn.Questions;
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<Questions> Get(int id)
         {
-            var result = _db.Questions.Where(q => q.Id == id);
+            var result = DbConn.Questions.Where(q => q.Id == id);
             if (result.Any())
                 return result.First();
             return NoContent();
