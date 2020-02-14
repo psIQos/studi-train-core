@@ -1,14 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using StudiTrain.Models;
+using StudiTrain.Setup;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic.CompilerServices;
-using StudiTrain.Models;
-using StudiTrain.Models.Database;
-using StudiTrain.Setup;
 
 namespace StudiTrain.Controllers
 {
@@ -36,7 +31,7 @@ namespace StudiTrain.Controllers
             var user = Services.UserService.Authenticate(userInput);
             if (!user.Authenticated)
                 return Unauthorized();
-            return Ok(new Dictionary<string,string>
+            return Ok(new Dictionary<string, string>
             {
                 {"access_token", user.GetJwToken() },
                 {"expires_in", user.JwToken.ValidTo.ToString(CultureInfo.CurrentCulture)}

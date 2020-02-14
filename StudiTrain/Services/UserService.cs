@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using StudiTrain.Entities;
+﻿using StudiTrain.Entities;
 using StudiTrain.Models;
 using StudiTrain.Models.Database;
 using StudiTrain.Setup;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace StudiTrain.Services
 {

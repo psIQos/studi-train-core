@@ -10,7 +10,7 @@ namespace StudiTrain.Setup
 
         protected ControllerServices Services { get; }
 
-        public StudiTrainController(IAppSettings settings)  
+        public StudiTrainController(IAppSettings settings)
         {
             DbConn = new PostgresContext(settings.ControllerSetup.ConnectionString);
             Services = new ControllerServices(DbConn, settings.JwtSetup);

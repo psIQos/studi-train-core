@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace StudiTrain.Models
 {
@@ -13,6 +8,6 @@ namespace StudiTrain.Models
         public string Username { get; set; }
 
         [Required]
-        public string Passhash { get; set; }    
+        public string Passhash { get; set; }
     }
 }
