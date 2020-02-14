@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace StudiTrain.Models
+namespace StudiTrain.Models.Database
 {
     public partial class PostgresContext : DbContext
     {

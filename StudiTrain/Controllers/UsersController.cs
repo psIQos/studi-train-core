@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudiTrain.Models;
+using StudiTrain.Models.Database;
 
 namespace StudiTrain.Controllers
 {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudiTrain.Models;
+using StudiTrain.Models.Database;
 using StudiTrain.Setup;
 
 namespace StudiTrain.Controllers

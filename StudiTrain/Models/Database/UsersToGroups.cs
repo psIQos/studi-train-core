@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace StudiTrain.Models
+﻿namespace StudiTrain.Models.Database
 {
     public partial class UsersToGroups
     {
