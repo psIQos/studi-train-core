@@ -8,7 +8,6 @@ namespace StudiTrain.Models
         public Permissions()
         {
             GroupsToPermissions = new HashSet<GroupsToPermissions>();
-            UsersToPermissions = new HashSet<UsersToPermissions>();
         }
 
         public int Id { get; set; }
@@ -16,6 +15,5 @@ namespace StudiTrain.Models
         public string Comment { get; set; }
 
         public virtual ICollection<GroupsToPermissions> GroupsToPermissions { get; set; }
-        public virtual ICollection<UsersToPermissions> UsersToPermissions { get; set; }
     }
 }

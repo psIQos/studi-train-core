@@ -23,9 +23,9 @@ namespace StudiTrain.Controllers
         // GET api/values
         [Authorize]
         [HttpGet]
-        public ActionResult<List<Questions>> Get()
+        public ActionResult<DbSet<Questions>> Get()
         {
-            return _db.Questions.ToList();
+            return _db.Questions;
         }
 
         // GET api/values/5

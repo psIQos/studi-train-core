@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StudiTrain.Models;
 
 namespace StudiTrain.Models
 {
@@ -21,7 +20,6 @@ namespace StudiTrain.Models
 
         public virtual DbSet<AnswersMc> AnswersMc { get; set; }
         public virtual DbSet<Categories> Categories { get; set; }
-        public virtual DbSet<CategoryRelations> CategoryRelations { get; set; }
         public virtual DbSet<Groups> Groups { get; set; }
         public virtual DbSet<GroupsToPermissions> GroupsToPermissions { get; set; }
         public virtual DbSet<Permissions> Permissions { get; set; }
@@ -30,7 +28,6 @@ namespace StudiTrain.Models
         public virtual DbSet<Tags> Tags { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<UsersToGroups> UsersToGroups { get; set; }
-        public virtual DbSet<UsersToPermissions> UsersToPermissions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         { }
@@ -72,6 +69,8 @@ namespace StudiTrain.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Ancestor).HasColumnName("ancestor");
+
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasColumnType("character varying");
@@ -80,28 +79,11 @@ namespace StudiTrain.Models
                     .IsRequired()
                     .HasColumnName("name")
                     .HasColumnType("character varying");
-            });
-
-            modelBuilder.Entity<CategoryRelations>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("category_relations");
-
-                entity.Property(e => e.Ancestor).HasColumnName("ancestor");
-
-                entity.Property(e => e.Descendant).HasColumnName("descendant");
 
                 entity.HasOne(d => d.AncestorNavigation)
-                    .WithMany(p => p.CategoryRelationsAncestorNavigation)
+                    .WithMany(p => p.InverseAncestorNavigation)
                     .HasForeignKey(d => d.Ancestor)
-                    .HasConstraintName("category_relations_ancestor_fkey");
-
-                entity.HasOne(d => d.DescendantNavigation)
-                    .WithMany(p => p.CategoryRelationsDescendantNavigation)
-                    .HasForeignKey(d => d.Descendant)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("category_relations_descendant_fkey");
+                    .HasConstraintName("categories_ancestor_fkey");
             });
 
             modelBuilder.Entity<Groups>(entity =>
@@ -125,7 +107,8 @@ namespace StudiTrain.Models
 
             modelBuilder.Entity<GroupsToPermissions>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.GroupId, e.PermissionId })
+                    .HasName("groups_to_permissions_pkey");
 
                 entity.ToTable("groups_to_permissions");
 
@@ -136,13 +119,11 @@ namespace StudiTrain.Models
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.GroupsToPermissions)
                     .HasForeignKey(d => d.GroupId)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("groups_to_permissions_group_id_fkey");
 
                 entity.HasOne(d => d.Permission)
                     .WithMany(p => p.GroupsToPermissions)
                     .HasForeignKey(d => d.PermissionId)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("groups_to_permissions_permission_id_fkey");
             });
 
@@ -293,29 +274,6 @@ namespace StudiTrain.Models
                     .WithMany(p => p.UsersToGroups)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("users_to_groups_user_id_fkey");
-            });
-
-            modelBuilder.Entity<UsersToPermissions>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("users_to_permissions");
-
-                entity.Property(e => e.PermissionId).HasColumnName("permission_id");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.Permission)
-                    .WithMany(p => p.UsersToPermissions)
-                    .HasForeignKey(d => d.PermissionId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("users_to_permissions_permission_id_fkey");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UsersToPermissions)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("users_to_permissions_user_id_fkey");
             });
 
             OnModelCreatingPartial(modelBuilder);
