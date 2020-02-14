@@ -55,7 +55,7 @@ namespace StudiTrain.Models.Database
                 entity.HasOne(d => d.Q)
                     .WithMany(p => p.AnswersMc)
                     .HasForeignKey(d => d.QId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientNoAction)
                     .HasConstraintName("answers_mc_q_id_fkey");
             });
 

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using StudiTrain.Entities;
 
 namespace StudiTrain.Models.Database
 {
@@ -8,6 +10,17 @@ namespace StudiTrain.Models.Database
         {
             AnswersMc = new HashSet<AnswersMc>();
             Posts = new HashSet<Posts>();
+        }
+
+        public Questions(Question question)
+        {
+            QuestionText = question.QuestionText;
+            QuestionTitle = question.Title;
+            if (question.answers == null) return;
+            AnswersMc = new List<AnswersMc>();
+            foreach (var item in question.answers.Select((value, index) => (value, index))) 
+                AnswersMc.Add(new AnswersMc(item.value, item.index));
+            Complete = question.answers.Count() >= 4 && question.answers.All(a => a.Correct != null);
         }
 
         public int Id { get; set; }

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StudiTrain.Entities;
 using StudiTrain.Models.Database;
 using StudiTrain.Setup;
-using System.Linq;
 
 namespace StudiTrain.Controllers
 {
@@ -18,25 +20,40 @@ namespace StudiTrain.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult<DbSet<Questions>> Get()
+        public ActionResult<List<Questions>> Get()
         {
-            return DbConn.Questions;
+            return DbConn.Questions.Include(q => q.AnswersMc).ToList();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<Questions> Get(int id)
         {
-            var result = DbConn.Questions.Where(q => q.Id == id);
-            if (result.Any())
-                return result.First();
-            return NoContent();
+            var question = DbConn.Questions.FirstOrDefault(q => q.Id == id);
+            if (question == null)
+                return NoContent();
+            return question;
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] Questions question)
+        public void PostOne([FromBody] Question questionInput)
         {
+            var question = new Questions(questionInput);
+            DbConn.Questions.Add(question);
+            DbConn.SaveChanges();
+        }
+
+        [Route("many")]
+        [HttpPost]
+        public void PostMany([FromBody] IEnumerable<Question> questionsInput)
+        {
+            foreach (var questionInput in questionsInput)
+            {
+                var question = new Questions(questionInput);
+                DbConn.Questions.Add(question);
+            }
+            DbConn.SaveChanges();
         }
 
         // PUT api/values/5
