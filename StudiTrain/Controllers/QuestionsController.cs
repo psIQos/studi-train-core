@@ -7,6 +7,7 @@ using StudiTrain.Setup;
 
 namespace StudiTrain.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class QuestionsController : StudiTrainController
@@ -16,7 +17,6 @@ namespace StudiTrain.Controllers
         }
 
         // GET api/values
-        [Authorize]
         [HttpGet]
         public ActionResult<DbSet<Questions>> Get()
         {
