@@ -26,11 +26,11 @@ namespace StudiTrain
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(new ControllerSetup(Configuration));
-            services.AddControllers()
+            services.AddControllers();
                 //Fixes object cycle problem
-                .AddNewtonsoftJson(options =>
-                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                );
+                //.AddNewtonsoftJson(options =>
+                //    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                //);
             services.AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo {Title = "Questions Api", Version = "v1"});

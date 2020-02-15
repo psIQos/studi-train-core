@@ -12,15 +12,17 @@ namespace StudiTrain.Models.Database
             Posts = new HashSet<Posts>();
         }
 
-        public Questions(Question question)
+        public Questions(Question question, int? categoryId = null)
         {
             QuestionText = question.QuestionText;
             QuestionTitle = question.Title;
-            if (question.answers == null) return;
+            Category = categoryId;
+            if (question.Answers == null) return;
             AnswersMc = new List<AnswersMc>();
-            foreach (var item in question.answers.Select((value, index) => (value, index))) 
-                AnswersMc.Add(new AnswersMc(item.value, item.index));
-            Complete = question.answers.Count() >= 4 && question.answers.All(a => a.Correct != null);
+
+            foreach (var (answer, index) in question.Answers.Select((value, index) => (value, index))) 
+                AnswersMc.Add(new AnswersMc(answer, index));
+            Complete = question.Answers.Count() >= 4 && question.Answers.All(a => a.Correct != null);
         }
 
         public int Id { get; set; }
