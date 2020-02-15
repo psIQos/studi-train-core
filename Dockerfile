@@ -17,6 +17,10 @@ FROM build AS publish
 RUN dotnet publish "StudiTrain.csproj" -c Release -o /app/publish
 
 FROM base AS final
+RUN apt-get update && \
+    apt-get install -y openssh-server bash curl python
+RUN mkdir /app/.profile.d && echo "[ -z \"$SSH_CLIENT\" ] && source <(curl --fail --retry 3 -sSL \"$HEROKU_EXEC_URL\")" > /app/.profile.d/heroku-exec.sh
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENV ASPNETCORE_URLS http://*:$PORT
