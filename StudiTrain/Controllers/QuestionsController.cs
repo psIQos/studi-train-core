@@ -52,8 +52,8 @@ namespace StudiTrain.Controllers
             return question.Id;
         }
 
-        [Route("import")]
-        [HttpPost("{category}")]
+        [Route("import/{category}")]
+        [HttpPost]
         public ActionResult<IEnumerable<int>> PostMany([FromBody] IEnumerable<Question> questionsInput, int? category)
         {
             if (category == null)
@@ -66,6 +66,10 @@ namespace StudiTrain.Controllers
                 DbConn.Categories.Add(newCategory);
                 DbConn.SaveChanges();
                 category = newCategory.Id;
+            }
+            else if (DbConn.Categories.Find(category) == null)
+            {
+                return BadRequest();
             }
             var questions = questionsInput.Select(questionInput => new Questions(questionInput, category)).ToList();
             DbConn.Questions.AddRange(questions);
