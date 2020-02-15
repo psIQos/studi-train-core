@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace StudiTrain.Models.Database
 {
@@ -14,6 +15,7 @@ namespace StudiTrain.Models.Database
         public string Name { get; set; }
         public string Comment { get; set; }
         public int? Ancestor { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public virtual Categories AncestorNavigation { get; set; }
         public virtual ICollection<Categories> InverseAncestorNavigation { get; set; }

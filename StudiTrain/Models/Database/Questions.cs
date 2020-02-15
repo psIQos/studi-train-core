@@ -20,7 +20,7 @@ namespace StudiTrain.Models.Database
             if (question.Answers == null) return;
             AnswersMc = new List<AnswersMc>();
 
-            foreach (var (answer, index) in question.Answers.Select((value, index) => (value, index))) 
+            foreach (var (answer, index) in question.Answers.Select((value, index) => (value, index)))
                 AnswersMc.Add(new AnswersMc(answer, index));
             Complete = question.Answers.Count() >= 4 && question.Answers.All(a => a.Correct != null);
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,11 +52,22 @@ namespace StudiTrain.Controllers
             return question.Id;
         }
 
-        [Route("many")]
-        [HttpPost]
-        public ActionResult<IEnumerable<int>> PostMany([FromBody] IEnumerable<Question> questionsInput)
+        [Route("import")]
+        [HttpPost("{category}")]
+        public ActionResult<IEnumerable<int>> PostMany([FromBody] IEnumerable<Question> questionsInput, int? category)
         {
-            var questions = questionsInput.Select(questionInput => new Questions(questionInput)).ToList();
+            if (category == null)
+            {
+                var newCategory = new Categories
+                {
+                    Name = Guid.NewGuid().ToString(),
+                    Comment = "created on import"
+                };
+                DbConn.Categories.Add(newCategory);
+                DbConn.SaveChanges();
+                category = newCategory.Id;
+            }
+            var questions = questionsInput.Select(questionInput => new Questions(questionInput, category)).ToList();
             DbConn.Questions.AddRange(questions);
             DbConn.SaveChanges();
             return Ok(questions.Select(q => q.Id).OrderBy(id => id));

@@ -5,6 +5,11 @@ namespace StudiTrain.Entities
 {
     public class AnswerMc
     {
+        public AnswerMc()
+        {
+
+        }
+
         public AnswerMc(AnswersMc answer)
         {
             Number = answer.Number;

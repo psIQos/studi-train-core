@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace StudiTrain.Models.Database
 {
@@ -55,7 +57,7 @@ namespace StudiTrain.Models.Database
                 entity.HasOne(d => d.Q)
                     .WithMany(p => p.AnswersMc)
                     .HasForeignKey(d => d.QId)
-                    .OnDelete(DeleteBehavior.ClientNoAction)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("answers_mc_q_id_fkey");
             });
 
@@ -74,6 +76,10 @@ namespace StudiTrain.Models.Database
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasColumnType("character varying");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -241,6 +247,15 @@ namespace StudiTrain.Models.Database
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasColumnName("email")
+                    .HasColumnType("character varying");
 
                 entity.Property(e => e.Passhash)
                     .IsRequired()

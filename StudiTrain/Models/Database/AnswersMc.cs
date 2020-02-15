@@ -6,7 +6,7 @@ namespace StudiTrain.Models.Database
     {
         public AnswersMc()
         {
-            
+
         }
 
         public AnswersMc(AnswerMc answer, int number)

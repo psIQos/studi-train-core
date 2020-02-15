@@ -8,6 +8,11 @@ namespace StudiTrain.Entities
 {
     public class Question
     {
+        public Question()
+        {
+
+        }
+
         public Question(Questions question)
         {
             if (question == null)
