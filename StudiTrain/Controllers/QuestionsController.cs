@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StudiTrain.Entities;
 using StudiTrain.Models.Database;
 using StudiTrain.Setup;
-using System.Linq;
 
 namespace StudiTrain.Controllers
 {
@@ -18,25 +20,45 @@ namespace StudiTrain.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult<DbSet<Questions>> Get()
+        public ActionResult<IEnumerable<Question>> Get([FromQuery] int? category)
         {
-            return DbConn.Questions;
+            var questions = DbConn.Questions.Include(q => q.AnswersMc);
+            if (category == null) return Ok(questions.Select(q => new Question(q)));
+
+            return Ok(questions.Where(q => q.Category == category).Select(q => new Question(q)));
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<Questions> Get(int id)
+        public ActionResult<Question> GetOne(int id)
         {
-            var result = DbConn.Questions.Where(q => q.Id == id);
-            if (result.Any())
-                return result.First();
-            return NoContent();
+            var questionDb = DbConn.Questions
+                .Include(q => q.AnswersMc)
+                .FirstOrDefault(q => q.Id == id);
+            if (questionDb == null)
+                return NoContent();
+            var question = new Question(questionDb);
+            return question;
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] Questions question)
+        public ActionResult<int> PostOne([FromBody] Question questionInput)
         {
+            var question = new Questions(questionInput);
+            DbConn.Questions.Add(question);
+            DbConn.SaveChanges();
+            return question.Id;
+        }
+
+        [Route("many")]
+        [HttpPost]
+        public ActionResult<IEnumerable<int>> PostMany([FromBody] IEnumerable<Question> questionsInput)
+        {
+            var questions = questionsInput.Select(questionInput => new Questions(questionInput)).ToList();
+            DbConn.Questions.AddRange(questions);
+            DbConn.SaveChanges();
+            return Ok(questions.Select(q => q.Id).OrderBy(id => id));
         }
 
         // PUT api/values/5

@@ -13,11 +13,17 @@ namespace StudiTrain.Setup
     {
         public JwtSetup(IConfiguration conf)
         {
-            JwtSecret = Encoding.ASCII.GetBytes(
-                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
-                    ? conf["JwtSecret"]
-                    : Environment.GetEnvironmentVariable("JWT_SECRET")
-            );
+            string secret;
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                secret = conf["JwtSecret"];
+            }
+            else
+            {
+                var jwtString = Environment.GetEnvironmentVariable("JWT_SECRET");
+                secret = jwtString ?? throw new ArgumentException("JWT_SECRET environment variable is not set");
+            }
+            JwtSecret = Encoding.ASCII.GetBytes(secret);
         }
 
         public byte[] JwtSecret { get; }
