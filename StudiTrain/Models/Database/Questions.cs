@@ -12,11 +12,12 @@ namespace StudiTrain.Models.Database
             Posts = new HashSet<Posts>();
         }
 
-        public Questions(Question question, int? categoryId = null)
+        public Questions(Question question, int? categoryId = null, int? number = null)
         {
             QuestionText = question.QuestionText;
             QuestionTitle = question.Title;
             Category = categoryId;
+            Number = number;
             if (question.Answers == null) return;
             AnswersMc = new List<AnswersMc>();
 
@@ -33,6 +34,8 @@ namespace StudiTrain.Models.Database
         public int? Category { get; set; }
         public int? Tag { get; set; }
 
+        public int? Number { get; set; }
+        
         public virtual Categories CategoryNavigation { get; set; }
         public virtual Tags TagNavigation { get; set; }
         public virtual ICollection<AnswersMc> AnswersMc { get; set; }
