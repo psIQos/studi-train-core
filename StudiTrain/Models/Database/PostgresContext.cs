@@ -185,6 +185,10 @@ namespace StudiTrain.Models.Database
             {
                 entity.ToTable("questions");
 
+                entity.HasIndex(e => new {e.Category, e.Number})
+                    .HasName("questions_category_number_key")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Category).HasColumnName("category");
@@ -205,6 +209,10 @@ namespace StudiTrain.Models.Database
                 entity.Property(e => e.QuestionType).HasColumnName("question_type");
 
                 entity.Property(e => e.Tag).HasColumnName("tag");
+
+                entity.Property(e => e.Number)
+                    .HasColumnName("number")
+                    .HasDefaultValueSql("0");
 
                 entity.HasOne(d => d.CategoryNavigation)
                     .WithMany(p => p.Questions)

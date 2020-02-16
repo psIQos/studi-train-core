@@ -24,9 +24,17 @@ namespace StudiTrain.Controllers
         public ActionResult<IEnumerable<Question>> Get([FromQuery] int? category)
         {
             var questions = DbConn.Questions.Include(q => q.AnswersMc);
-            if (category == null) return Ok(questions.Select(q => new Question(q)));
+            if (category == null)
+                return Ok(questions
+                    .OrderBy(q => q.Number)
+                    .Select(q => new Question(q))
+                );
 
-            return Ok(questions.Where(q => q.Category == category).Select(q => new Question(q)));
+            return Ok(questions
+                .Where(q => q.Category == category)
+                .OrderBy(q => q.Number)
+                .Select(q => new Question(q))
+            );
         }
 
         [HttpGet("count")]
@@ -63,8 +71,10 @@ namespace StudiTrain.Controllers
 
         [Route("import")]
         [HttpPost]
-        public ActionResult<IEnumerable<int>> PostMany([FromBody] IEnumerable<Question> questionsInput, [FromRoute] int? category)
+        public ActionResult<IEnumerable<int>> PostMany([FromBody] IEnumerable<Question> questionsInput,
+            [FromRoute] int? category)
         {
+            // if no category is specified one will be created
             if (category == null)
             {
                 var newCategory = new Categories
@@ -76,12 +86,15 @@ namespace StudiTrain.Controllers
                 DbConn.SaveChanges();
                 category = newCategory.Id;
             }
+            // if the specified category can't be found it's wrong
             else if (DbConn.Categories.Find(category) == null)
             {
                 return BadRequest();
             }
-            var questions = questionsInput.Select(questionInput => new Questions(questionInput, category)).ToList();
-            DbConn.Questions.AddRange(questions);
+
+            var questions = questionsInput
+                .Select((questionInput, index) => new Questions(questionInput, category, index)).ToList();
+            DbConn.AddRange(questions);
             DbConn.SaveChanges();
             return Ok(questions.Select(q => q.Id).OrderBy(id => id));
         }
