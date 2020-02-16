@@ -29,6 +29,15 @@ namespace StudiTrain.Controllers
             return Ok(questions.Where(q => q.Category == category).Select(q => new Question(q)));
         }
 
+        [HttpGet("count")]
+        public ActionResult<int> GetCount([FromQuery] int? category)
+        {
+            var questions = DbConn.Questions.Include(q => q.AnswersMc);
+            if (category == null) return Ok(questions.Count());
+
+            return Ok(questions.Count(q => q.Category == category));
+        }
+
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<Question> GetOne(int id)
@@ -52,9 +61,9 @@ namespace StudiTrain.Controllers
             return question.Id;
         }
 
-        [Route("import/{category}")]
+        [Route("import")]
         [HttpPost]
-        public ActionResult<IEnumerable<int>> PostMany([FromBody] IEnumerable<Question> questionsInput, int? category)
+        public ActionResult<IEnumerable<int>> PostMany([FromBody] IEnumerable<Question> questionsInput, [FromRoute] int? category)
         {
             if (category == null)
             {
@@ -75,18 +84,6 @@ namespace StudiTrain.Controllers
             DbConn.Questions.AddRange(questions);
             DbConn.SaveChanges();
             return Ok(questions.Select(q => q.Id).OrderBy(id => id));
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
