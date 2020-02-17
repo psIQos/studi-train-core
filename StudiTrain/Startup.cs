@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using StudiTrain.Setup;
 
 namespace StudiTrain
@@ -26,11 +25,12 @@ namespace StudiTrain
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(new ControllerSetup(Configuration));
+            services.AddCors();
             services.AddControllers();
-                //Fixes object cycle problem
-                //.AddNewtonsoftJson(options =>
-                //    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                //);
+            //Fixes object cycle problem
+            //.AddNewtonsoftJson(options =>
+            //    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            //);
             services.AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo {Title = "Questions Api", Version = "v1"});
@@ -64,7 +64,6 @@ namespace StudiTrain
             );
             var settings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(settings);
-            services.AddControllers();
 
             services.AddAuthentication(x =>
                 {
@@ -105,6 +104,13 @@ namespace StudiTrain
                 app.UseHsts();
             }
 
+            app.UseCors(builder =>
+            {
+                builder.SetIsOriginAllowedToAllowWildcardSubdomains()
+                    .WithOrigins("http://localhost:3000", "https://studi-train-vue-staging.herokuapp.com", "https://studi-train-*.herokuapp.com/")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseResponseCompression();
