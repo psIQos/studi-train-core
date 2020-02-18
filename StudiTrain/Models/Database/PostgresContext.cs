@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace StudiTrain.Models.Database
 {
@@ -74,6 +76,10 @@ namespace StudiTrain.Models.Database
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasColumnType("character varying");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -179,6 +185,10 @@ namespace StudiTrain.Models.Database
             {
                 entity.ToTable("questions");
 
+                entity.HasIndex(e => new {e.Category, e.Number})
+                    .HasName("questions_category_number_key")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Category).HasColumnName("category");
@@ -199,6 +209,10 @@ namespace StudiTrain.Models.Database
                 entity.Property(e => e.QuestionType).HasColumnName("question_type");
 
                 entity.Property(e => e.Tag).HasColumnName("tag");
+
+                entity.Property(e => e.Number)
+                    .HasColumnName("number")
+                    .HasDefaultValueSql("0");
 
                 entity.HasOne(d => d.CategoryNavigation)
                     .WithMany(p => p.Questions)
@@ -241,6 +255,15 @@ namespace StudiTrain.Models.Database
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasColumnName("email")
+                    .HasColumnType("character varying");
 
                 entity.Property(e => e.Passhash)
                     .IsRequired()
