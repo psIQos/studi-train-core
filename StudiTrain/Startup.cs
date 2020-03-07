@@ -106,10 +106,11 @@ namespace StudiTrain
 
             app.UseCors(builder =>
             {
-                builder.SetIsOriginAllowedToAllowWildcardSubdomains()
-                    .WithOrigins("http://localhost:3000", "https://studi-train-vue-staging.herokuapp.com", "https://*.herokuapp.com")
+                builder
+                    .WithOrigins("http://localhost:3000")
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed(url => url.StartsWith("https://studi-train") && url.EndsWith(".herokuapp.com"));
             });
             app.UseAuthentication();
             app.UseAuthorization();
