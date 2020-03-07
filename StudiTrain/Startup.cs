@@ -107,7 +107,8 @@ namespace StudiTrain
             app.UseCors(builder =>
             {
                 builder
-                    .SetIsOriginAllowed(url => url.StartsWith("https://studi-train") && url.EndsWith(".herokuapp.com"))
+                    .SetIsOriginAllowed(url => url.StartsWith("https://studi-train") && url.EndsWith(".herokuapp.com")
+                    || url.StartsWith("http://localhost:"))
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });
