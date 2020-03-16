@@ -82,6 +82,7 @@ namespace StudiTrain
                         ValidateAudience = false
                     };
                 });
+
             services.AddResponseCompression(options =>
             {
                 options.EnableForHttps = true;

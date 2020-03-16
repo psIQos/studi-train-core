@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using StudiTrain.Entities;
 
 namespace StudiTrain.Setup
 {
@@ -28,16 +29,17 @@ namespace StudiTrain.Setup
 
         public byte[] JwtSecret { get; }
 
-        public SecurityToken CreateJwToken(string name, IEnumerable<string> roles = null)
+        public SecurityToken CreateJwToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, name)
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(type: ClaimTypes.Actor, user.Id.ToString()), 
             };
 
-            if (roles != null)
-                foreach (var role in roles)
+            if (user.Roles != null)
+                foreach (var role in user.Roles)
                     claims.Append(new Claim(ClaimTypes.Role, role));
 
             var tokenDescriptor = new SecurityTokenDescriptor

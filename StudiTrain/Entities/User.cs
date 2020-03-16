@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using StudiTrain.Models.Database;
 
 namespace StudiTrain.Entities
 {
@@ -8,29 +9,30 @@ namespace StudiTrain.Entities
     {
         public User()
         {
+            Authenticated = false;
         }
 
-        public User(string name, int id)
+        public User(Users user)
         {
-            Name = name;
-            Id = id;
+            Name = user.Username;
+            DisplayName = user.DisplayName;
+            Id = user.Id;
         }
 
-        public User(string name, int id, SecurityToken jwToken, IEnumerable<string> roles = null,
-            bool authenticated = true)
+        public User(string name, int id, IEnumerable<string> roles = null)
         {
             Name = name;
             Id = id;
             Roles = roles;
-            JwToken = jwToken;
-            Authenticated = authenticated;
         }
 
         public string Name { get; }
 
         public int Id { get; }
 
-        public bool Authenticated { get; }
+        public bool Authenticated { get; } = true;
+
+        public string DisplayName { get; set; }
 
         public IEnumerable<string> Roles { get; set; }
 
