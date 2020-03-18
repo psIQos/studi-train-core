@@ -5,7 +5,7 @@ namespace StudiTrain.Services
 {
     public class ControllerServices
     {
-        public IUserService UserService { get; set; }
+        public IUserService UserService { get; }
 
         public ControllerServices(PostgresContext dbContext, JwtSetup setup)
         {

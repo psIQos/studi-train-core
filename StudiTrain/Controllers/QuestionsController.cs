@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudiTrain.Entities;
 using StudiTrain.Models.Database;
+using StudiTrain.Services;
 using StudiTrain.Setup;
 
 namespace StudiTrain.Controllers
@@ -19,7 +22,6 @@ namespace StudiTrain.Controllers
         {
         }
 
-        // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<Question>> Get([FromQuery] int? category)
         {
@@ -46,7 +48,6 @@ namespace StudiTrain.Controllers
             return Ok(questions.Count(q => q.Category == category));
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<Question> GetOne(int id)
         {
@@ -59,11 +60,29 @@ namespace StudiTrain.Controllers
             return question;
         }
 
-        // POST api/values
         [HttpPost]
-        public ActionResult<int> PostOne([FromBody] Question questionInput)
+        public ActionResult<int> PostOne([FromBody] Question questionInput, [FromQuery] int? category)
         {
-            var question = new Questions(questionInput);
+            // if no category is specified one will be created
+            if (category == null)
+            {
+                var newCategory = new Categories
+                {
+                    Name = Guid.NewGuid().ToString(),
+                    Comment = "created on import"
+                };
+                DbConn.Categories.Add(newCategory);
+                DbConn.SaveChanges();
+                category = newCategory.Id;
+            }
+            // if the specified category can't be found it's wrong
+            else if (DbConn.Categories.Find(category) == null)
+            {
+                return BadRequest();
+            }
+
+            var userId = Services.UserService.GetUserFromToken(HttpContext).Id;
+            var question = new Questions(questionInput, userId, category);
             DbConn.Questions.Add(question);
             DbConn.SaveChanges();
             return question.Id;
@@ -92,8 +111,9 @@ namespace StudiTrain.Controllers
                 return BadRequest();
             }
 
+            var userId = Services.UserService.GetUserFromToken(HttpContext).Id;
             var questions = questionsInput
-                .Select((questionInput, index) => new Questions(questionInput, category, index)).ToList();
+                .Select((questionInput, index) => new Questions(questionInput, userId, category, index)).ToList();
             DbConn.AddRange(questions);
             DbConn.SaveChanges();
             return Ok(questions.Select(q => q.Id).OrderBy(id => id));

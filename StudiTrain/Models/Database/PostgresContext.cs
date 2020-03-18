@@ -193,6 +193,8 @@ namespace StudiTrain.Models.Database
 
                 entity.Property(e => e.Category).HasColumnName("category");
 
+                entity.Property(e => e.Creator).HasColumnName("creator");
+
                 entity.Property(e => e.Complete)
                     .HasColumnName("complete")
                     .HasDefaultValueSql("false");
@@ -224,6 +226,12 @@ namespace StudiTrain.Models.Database
                     .HasForeignKey(d => d.Tag)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("questions_tag_fkey");
+
+                entity.HasOne(d => d.CreatorNavigation)
+                    .WithMany(p => p.Questions)
+                    .HasForeignKey(d => d.Creator)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("questions_creator_fkey");
             });
 
             modelBuilder.Entity<Tags>(entity =>
@@ -273,6 +281,10 @@ namespace StudiTrain.Models.Database
                 entity.Property(e => e.Username)
                     .IsRequired()
                     .HasColumnName("username")
+                    .HasColumnType("character varying");
+                entity.Property(e => e.DisplayName)
+                    .IsRequired()
+                    .HasColumnName("displayname")
                     .HasColumnType("character varying");
             });
 
