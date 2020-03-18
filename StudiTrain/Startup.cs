@@ -62,8 +62,8 @@ namespace StudiTrain
                     });
                 }
             );
-            var settings = new AppSettings(Configuration);
-            services.AddSingleton<IAppSettings>(settings);
+            var setup = new AppSetup(Configuration);
+            services.AddSingleton<IAppSetup>(setup);
 
             services.AddAuthentication(x =>
                 {
@@ -77,7 +77,7 @@ namespace StudiTrain
                     x.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(settings.JwtSetup.JwtSecret),
+                        IssuerSigningKey = new SymmetricSecurityKey(setup.JwtSetup.JwtSecret),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };

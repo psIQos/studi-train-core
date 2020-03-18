@@ -6,11 +6,21 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using StudiTrain.Entities;
 
 namespace StudiTrain.Setup
 {
-    public class JwtSetup
+    public interface IJwtSetup
+    {
+        public SecurityToken CreateJwToken(User user);
+        public byte[] JwtSecret { get; }
+    }
+
+    public class JwtSetup : IJwtSetup
     {
         public JwtSetup(IConfiguration conf)
         {

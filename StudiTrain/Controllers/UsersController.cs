@@ -12,7 +12,7 @@ namespace StudiTrain.Controllers
     [Route("api/[controller]")]
     public class UsersController : StudiTrainController
     {
-        public UsersController(IAppSettings settings) : base(settings) { }
+        public UsersController(IAppSetup setup) : base(setup) { }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]

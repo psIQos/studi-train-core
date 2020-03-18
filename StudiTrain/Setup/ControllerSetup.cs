@@ -4,7 +4,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace StudiTrain.Setup
 {
-    public class ControllerSetup
+    public interface IControllerSetup
+    {
+        public string ConnectionString { get; }
+    }
+
+    public class ControllerSetup : IControllerSetup
     {
         public ControllerSetup(IConfiguration conf)
         {
@@ -20,7 +25,7 @@ namespace StudiTrain.Setup
             }
         }
 
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; }
 
         /// <summary>
         ///     transform a connection string from libpq form to standard syntax
