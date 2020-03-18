@@ -20,7 +20,7 @@ namespace StudiTrain
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -65,23 +65,7 @@ namespace StudiTrain
             var settings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(settings);
 
-            services.AddAuthentication(x =>
-                {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(x =>
-                {
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(settings.JwtSetup.JwtSecret),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
-                });
+            services.AddJwtBearerAuthentication(settings);
 
             services.AddResponseCompression(options =>
             {
