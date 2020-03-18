@@ -63,6 +63,24 @@ namespace StudiTrain.Controllers
         [HttpPost]
         public ActionResult<int> PostOne([FromBody] Question questionInput, [FromQuery] int? category)
         {
+            // if no category is specified one will be created
+            if (category == null)
+            {
+                var newCategory = new Categories
+                {
+                    Name = Guid.NewGuid().ToString(),
+                    Comment = "created on import"
+                };
+                DbConn.Categories.Add(newCategory);
+                DbConn.SaveChanges();
+                category = newCategory.Id;
+            }
+            // if the specified category can't be found it's wrong
+            else if (DbConn.Categories.Find(category) == null)
+            {
+                return BadRequest();
+            }
+
             var userId = Services.UserService.GetUserFromToken(HttpContext).Id;
             var question = new Questions(questionInput, userId, category);
             DbConn.Questions.Add(question);
