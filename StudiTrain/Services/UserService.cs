@@ -19,12 +19,12 @@ namespace StudiTrain.Services
     public class UserService : IUserService
     {
         private readonly PostgresContext _dbConn;
-        private readonly JwtSetup _setup;
+        private readonly IJwtSetup _jwtSetup;
 
-        public UserService(PostgresContext dbConn, JwtSetup setup)
+        public UserService(PostgresContext dbConn, IJwtSetup jwtSetup)
         {
             _dbConn = dbConn;
-            _setup = setup;
+            _jwtSetup = jwtSetup;
         }
 
         public User Authenticate(AuthModel userInput)
@@ -35,7 +35,7 @@ namespace StudiTrain.Services
             if (user == null) return new User();
             // TODO: check roles
             var authUser = new User(user);
-            authUser.JwToken = _setup.CreateJwToken(authUser);
+            authUser.JwToken = _jwtSetup.CreateJwToken(authUser);
             return authUser;
         }
 

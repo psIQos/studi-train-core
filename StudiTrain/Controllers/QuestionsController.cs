@@ -18,7 +18,7 @@ namespace StudiTrain.Controllers
     [ApiController]
     public class QuestionsController : StudiTrainController
     {
-        public QuestionsController(IAppSettings settings) : base(settings)
+        public QuestionsController(IAppSetup setup) : base(setup)
         {
         }
 
